@@ -7,62 +7,294 @@
   <style>
     *{margin:0;padding:0;box-sizing:border-box;}
     body{background:#0d0f14;color:#eaeaea;font-family:'Segoe UI',sans-serif;}
-    header{background:#161b24;padding:1rem 2rem;border-bottom:2px solid #e63946;display:flex;justify-content:space-between;align-items:center;}
+    header{background:#161b24;padding:1rem 2rem;border-bottom:2px solid #e63946;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;}
     header h1{color:#e63946;font-size:1.2rem;}
-    .logout{background:#e63946;color:white;border:none;border-radius:8px;padding:0.4rem 1rem;cursor:pointer;font-size:0.85rem;font-weight:600;}
-    main{padding:2rem;}
-    .welcome{background:#161b24;border:1px solid #222;border-radius:14px;padding:2rem;text-align:center;margin-bottom:1.5rem;}
-    .welcome h2{color:#2a9d8f;font-size:1.3rem;margin-bottom:0.5rem;}
-    .welcome p{color:#888;font-size:0.9rem;}
-    .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
-    .card{background:#161b24;border:1px solid #222;border-radius:14px;padding:1.5rem;text-align:center;border-top:3px solid #e63946;}
-    .card .icon{font-size:2rem;margin-bottom:0.5rem;}
-    .card h3{font-size:1rem;margin-bottom:0.3rem;}
-    .card p{font-size:0.82rem;color:#888;}
-    .back{display:inline-block;margin-top:1.5rem;color:#888;text-decoration:none;font-size:0.85rem;}
-    .back:hover{color:#e63946;}
-    @media(max-width:600px){.cards{grid-template-columns:1fr;}}
+    .header-right{display:flex;gap:0.5rem;align-items:center;}
+    .btn{border:none;border-radius:8px;padding:0.4rem 1rem;cursor:pointer;font-size:0.85rem;font-weight:600;}
+    .btn-red{background:#e63946;color:white;}
+    .btn-green{background:#2a9d8f;color:white;}
+    .btn-outline{background:transparent;color:#eaeaea;border:1px solid #222;}
+
+    main{padding:1.5rem;}
+
+    /* KPI */
+    .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;}
+    .kpi{background:#161b24;border:1px solid #222;border-radius:12px;padding:1.2rem;text-align:center;border-top:3px solid #e63946;}
+    .kpi .icon{font-size:1.5rem;}
+    .kpi .num{font-size:1.6rem;font-weight:bold;color:#e63946;margin:0.3rem 0;}
+    .kpi .lbl{font-size:0.78rem;color:#888;}
+
+    /* SECTION */
+    .section{background:#161b24;border:1px solid #222;border-radius:12px;padding:1.5rem;margin-bottom:1.5rem;}
+    .section h2{color:#e63946;font-size:1rem;margin-bottom:1.2rem;display:flex;align-items:center;gap:0.5rem;}
+
+    /* FORM */
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+    .form-group{display:flex;flex-direction:column;gap:0.3rem;}
+    .form-group label{font-size:0.78rem;color:#888;font-weight:600;text-transform:uppercase;}
+    .form-group input,.form-group select{background:#0d0f14;color:#eaeaea;border:1.5px solid #222;border-radius:8px;padding:0.5rem 0.8rem;font-size:0.9rem;outline:none;}
+    .form-group input:focus,.form-group select:focus{border-color:#457b9d;}
+    .submit-btn{margin-top:1rem;background:#2a9d8f;color:white;border:none;border-radius:8px;padding:0.6rem 1.5rem;cursor:pointer;font-size:0.9rem;font-weight:600;}
+    .submit-btn:hover{background:#21867a;}
+
+    /* TABLE */
+    .tbl-wrap{overflow-x:auto;}
+    table{width:100%;border-collapse:collapse;font-size:0.85rem;min-width:500px;}
+    th{background:#e63946;color:white;padding:0.6rem 0.8rem;text-align:left;}
+    td{padding:0.55rem 0.8rem;border-bottom:1px solid #222;}
+    tr:hover td{background:rgba(230,57,70,0.07);}
+    .del-btn{background:#e63946;color:white;border:none;border-radius:6px;padding:0.25rem 0.6rem;cursor:pointer;font-size:0.78rem;}
+
+    /* EDIT DATA */
+    .edit-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+    .edit-item{display:flex;flex-direction:column;gap:0.3rem;}
+    .edit-item label{font-size:0.78rem;color:#888;font-weight:600;text-transform:uppercase;}
+    .edit-item input{background:#0d0f14;color:#eaeaea;border:1.5px solid #222;border-radius:8px;padding:0.5rem 0.8rem;font-size:0.9rem;outline:none;}
+    .edit-item input:focus{border-color:#457b9d;}
+
+    /* ALERT */
+    .alert-box{background:rgba(230,57,70,0.1);border:1px solid #e63946;border-radius:8px;padding:1rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;}
+    .alert-box input{background:#0d0f14;color:#eaeaea;border:1.5px solid #222;border-radius:8px;padding:0.4rem 0.8rem;font-size:0.9rem;outline:none;width:100px;}
+
+    /* SUCCESS MSG */
+    .success{background:rgba(42,157,143,0.15);border:1px solid #2a9d8f;color:#2a9d8f;padding:0.5rem 1rem;border-radius:8px;font-size:0.85rem;display:none;margin-top:0.8rem;}
+
+    @media(max-width:768px){
+      .kpi-grid{grid-template-columns:repeat(2,1fr);}
+      .form-grid{grid-template-columns:1fr;}
+      .edit-grid{grid-template-columns:1fr;}
+    }
   </style>
 </head>
 <body>
-  <header>
-    <h1>🚦 Admin Panel</h1>
-    <button class="logout" onclick="doLogout()">🚪 Logout</button>
-  </header>
-  <main>
-    <div class="welcome">
-      <h2>✅ Welcome, Admin!</h2>
-      <p>Traffic Accident Analytics Admin Panel</p>
+
+<header>
+  <h1>🚦 Admin Panel</h1>
+  <div class="header-right">
+    <a href="/" class="btn btn-outline">← Dashboard</a>
+    <button class="btn btn-red" onclick="doLogout()">🚪 Logout</button>
+  </div>
+</header>
+
+<main>
+
+  <!-- KPI -->
+  <div class="kpi-grid">
+    <div class="kpi">
+      <div class="icon">🚨</div>
+      <div class="num" id="kpi_acc">-</div>
+      <div class="lbl">Total Accidents</div>
     </div>
-    <div class="cards">
-      <div class="card">
-        <div class="icon">🚨</div>
-        <h3>Total Accidents</h3>
-        <p id="acc">Loading...</p>
+    <div class="kpi" style="border-color:#555">
+      <div class="icon">💀</div>
+      <div class="num" style="color:#aaa" id="kpi_deaths">-</div>
+      <div class="lbl">Total Deaths</div>
+    </div>
+    <div class="kpi" style="border-color:#e9820c">
+      <div class="icon">🏥</div>
+      <div class="num" style="color:#e9820c" id="kpi_inj">-</div>
+      <div class="lbl">Total Injuries</div>
+    </div>
+    <div class="kpi" style="border-color:#457b9d">
+      <div class="icon">📅</div>
+      <div class="num" style="color:#457b9d" id="kpi_avg">-</div>
+      <div class="lbl">Avg Per Day</div>
+    </div>
+  </div>
+
+  <!-- 1. NEW ACCIDENT ENTRY -->
+  <div class="section">
+    <h2>➕ New Accident Entry</h2>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Date</label>
+        <input type="date" id="f_date"/>
       </div>
-      <div class="card">
-        <div class="icon">💀</div>
-        <h3>Total Deaths</h3>
-        <p id="deaths">Loading...</p>
+      <div class="form-group">
+        <label>City</label>
+        <select id="f_city">
+          <option>Chennai</option>
+          <option>Coimbatore</option>
+          <option>Madurai</option>
+          <option>Salem</option>
+          <option>Trichy</option>
+          <option>Other</option>
+        </select>
       </div>
-      <div class="card">
-        <div class="icon">🏥</div>
-        <h3>Total Injuries</h3>
-        <p id="injuries">Loading...</p>
+      <div class="form-group">
+        <label>Cause</label>
+        <select id="f_cause">
+          <option>Overspeeding</option>
+          <option>Drunk Driving</option>
+          <option>Signal Jump</option>
+          <option>Wrong Lane</option>
+          <option>Distracted</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Accidents Count</label>
+        <input type="number" id="f_count" placeholder="0" min="0"/>
+      </div>
+      <div class="form-group">
+        <label>Deaths</label>
+        <input type="number" id="f_deaths" placeholder="0" min="0"/>
+      </div>
+      <div class="form-group">
+        <label>Injuries</label>
+        <input type="number" id="f_injuries" placeholder="0" min="0"/>
       </div>
     </div>
-    <a href="/" class="back">← Back to Dashboard</a>
-  </main>
-  <script>
-    async function doLogout() {
-      await fetch('/api/logout');
-      window.location.href = '/';
+    <button class="submit-btn" onclick="addEntry()">➕ Add Entry</button>
+    <div class="success" id="entry_success">✅ Entry added successfully!</div>
+  </div>
+
+  <!-- 2. RECORDS TABLE -->
+  <div class="section">
+    <h2>📋 All Accident Records</h2>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr><th>#</th><th>Date</th><th>City</th><th>Cause</th><th>Count</th><th>Deaths</th><th>Injuries</th><th>Action</th></tr>
+        </thead>
+        <tbody id="recordsTable">
+          <tr><td colspan="8" style="text-align:center;color:#888">No records yet</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 3. EDIT SUMMARY DATA -->
+  <div class="section">
+    <h2>📊 Edit Summary Data</h2>
+    <div class="edit-grid">
+      <div class="edit-item">
+        <label>Total Accidents</label>
+        <input type="number" id="e_acc"/>
+      </div>
+      <div class="edit-item">
+        <label>Total Deaths</label>
+        <input type="number" id="e_deaths"/>
+      </div>
+      <div class="edit-item">
+        <label>Total Injuries</label>
+        <input type="number" id="e_inj"/>
+      </div>
+      <div class="edit-item">
+        <label>Avg Per Day</label>
+        <input type="number" id="e_avg" step="0.1"/>
+      </div>
+    </div>
+    <button class="submit-btn" onclick="saveSummary()">💾 Save Changes</button>
+    <div class="success" id="summary_success">✅ Summary updated!</div>
+  </div>
+
+  <!-- 4. ALERT THRESHOLD -->
+  <div class="section">
+    <h2>🔔 Alert Settings</h2>
+    <div class="alert-box">
+      <span style="color:#888;font-size:0.9rem">Show High Alert when accidents exceed:</span>
+      <input type="number" id="alertThreshold" value="1000"/>
+      <button class="submit-btn" style="margin-top:0" onclick="saveAlert()">Save</button>
+      <span style="color:#2a9d8f;font-size:0.85rem;display:none" id="alert_success">✅ Saved!</span>
+    </div>
+  </div>
+
+</main>
+
+<script>
+  let records = JSON.parse(localStorage.getItem('accident_records') || '[]');
+  let threshold = parseInt(localStorage.getItem('alert_threshold') || '1000');
+
+  // Load summary
+  fetch('/api/summary').then(r=>r.json()).then(d=>{
+    document.getElementById('kpi_acc').textContent = d.total_accidents.toLocaleString();
+    document.getElementById('kpi_deaths').textContent = d.total_deaths.toLocaleString();
+    document.getElementById('kpi_inj').textContent = d.total_injuries.toLocaleString();
+    document.getElementById('kpi_avg').textContent = d.avg_per_day;
+    document.getElementById('e_acc').value = d.total_accidents;
+    document.getElementById('e_deaths').value = d.total_deaths;
+    document.getElementById('e_inj').value = d.total_injuries;
+    document.getElementById('e_avg').value = d.avg_per_day;
+  });
+
+  document.getElementById('alertThreshold').value = threshold;
+  renderTable();
+
+  function addEntry() {
+    const date = document.getElementById('f_date').value;
+    const city = document.getElementById('f_city').value;
+    const cause = document.getElementById('f_cause').value;
+    const count = parseInt(document.getElementById('f_count').value) || 0;
+    const deaths = parseInt(document.getElementById('f_deaths').value) || 0;
+    const injuries = parseInt(document.getElementById('f_injuries').value) || 0;
+
+    if (!date) { alert('Date போடுங்க!'); return; }
+
+    records.push({id: Date.now(), date, city, cause, count, deaths, injuries});
+    localStorage.setItem('accident_records', JSON.stringify(records));
+    renderTable();
+
+    // Reset form
+    document.getElementById('f_date').value = '';
+    document.getElementById('f_count').value = '';
+    document.getElementById('f_deaths').value = '';
+    document.getElementById('f_injuries').value = '';
+
+    const s = document.getElementById('entry_success');
+    s.style.display = 'block';
+    setTimeout(()=>s.style.display='none', 2000);
+  }
+
+  function renderTable() {
+    const tbody = document.getElementById('recordsTable');
+    if (records.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:#888">No records yet</td></tr>';
+      return;
     }
-    fetch('/api/summary').then(r=>r.json()).then(d=>{
-      document.getElementById('acc').textContent = d.total_accidents.toLocaleString();
-      document.getElementById('deaths').textContent = d.total_deaths.toLocaleString();
-      document.getElementById('injuries').textContent = d.total_injuries.toLocaleString();
-    });
-  </script>
+    tbody.innerHTML = records.map((r, i) => `
+      <tr>
+        <td>${i+1}</td>
+        <td>${r.date}</td>
+        <td>${r.city}</td>
+        <td>${r.cause}</td>
+        <td>${r.count}</td>
+        <td>${r.deaths}</td>
+        <td>${r.injuries}</td>
+        <td><button class="del-btn" onclick="deleteRecord(${r.id})">🗑️ Delete</button></td>
+      </tr>
+    `).join('');
+  }
+
+  function deleteRecord(id) {
+    if (!confirm('Delete பண்ணணுமா?')) return;
+    records = records.filter(r => r.id !== id);
+    localStorage.setItem('accident_records', JSON.stringify(records));
+    renderTable();
+  }
+
+  function saveSummary() {
+    const s = document.getElementById('summary_success');
+    s.style.display = 'block';
+    document.getElementById('kpi_acc').textContent = parseInt(document.getElementById('e_acc').value).toLocaleString();
+    document.getElementById('kpi_deaths').textContent = parseInt(document.getElementById('e_deaths').value).toLocaleString();
+    document.getElementById('kpi_inj').textContent = parseInt(document.getElementById('e_inj').value).toLocaleString();
+    document.getElementById('kpi_avg').textContent = document.getElementById('e_avg').value;
+    setTimeout(()=>s.style.display='none', 2000);
+  }
+
+  function saveAlert() {
+    threshold = parseInt(document.getElementById('alertThreshold').value) || 1000;
+    localStorage.setItem('alert_threshold', threshold);
+    const s = document.getElementById('alert_success');
+    s.style.display = 'inline';
+    setTimeout(()=>s.style.display='none', 2000);
+  }
+
+  async function doLogout() {
+    await fetch('/api/logout');
+    window.location.href = '/';
+  }
+</script>
 </body>
 </html>
