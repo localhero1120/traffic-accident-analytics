@@ -1,14 +1,47 @@
-from flask import Flask, jsonify, send_from_directory
+from flask import Flask, jsonify, send_from_directory, request, session, redirect
 from flask_cors import CORS
 import os
 
 app = Flask(__name__, static_folder='../frontend', static_url_path='')
 CORS(app)
+app.secret_key = "traffic123"
 
+ADMIN_USERNAME = "admin"
+ADMIN_PASSWORD = "traffic@123"
+
+# ── MAIN PAGE ──
 @app.route('/')
 def index():
     return send_from_directory('../frontend', 'index.html')
 
+# ── LOGIN PAGE ──
+@app.route('/login')
+def login_page():
+    return send_from_directory('../frontend', 'login.html')
+
+# ── ADMIN PAGE ──
+@app.route('/admin')
+def admin_page():
+    if not session.get('admin'):
+        return redirect('/login')
+    return send_from_directory('../frontend', 'admin.html')
+
+# ── LOGIN API ──
+@app.route('/api/login', methods=['POST'])
+def api_login():
+    data = request.get_json()
+    if data.get('username') == ADMIN_USERNAME and data.get('password') == ADMIN_PASSWORD:
+        session['admin'] = True
+        return jsonify({"success": True})
+    return jsonify({"success": False, "error": "Wrong username or password!"})
+
+# ── LOGOUT ──
+@app.route('/api/logout')
+def api_logout():
+    session.pop('admin', None)
+    return jsonify({"success": True})
+
+# ── API ROUTES ──
 @app.route('/api/summary')
 def summary():
     return jsonify({
@@ -21,21 +54,21 @@ def summary():
 @app.route('/api/by-cause')
 def by_cause():
     return jsonify([
-        {"cause": "Overspeeding", "count": 380},
+        {"cause": "Overspeeding",  "count": 380},
         {"cause": "Drunk Driving", "count": 210},
-        {"cause": "Signal Jump", "count": 175},
-        {"cause": "Wrong Lane", "count": 140},
-        {"cause": "Distracted", "count": 345}
+        {"cause": "Signal Jump",   "count": 175},
+        {"cause": "Wrong Lane",    "count": 140},
+        {"cause": "Distracted",    "count": 345}
     ])
 
 @app.route('/api/by-location')
 def by_location():
     return jsonify([
-        {"location": "Chennai", "count": 320},
+        {"location": "Chennai",    "count": 320},
         {"location": "Coimbatore", "count": 185},
-        {"location": "Madurai", "count": 160},
-        {"location": "Salem", "count": 130},
-        {"location": "Trichy", "count": 110}
+        {"location": "Madurai",    "count": 160},
+        {"location": "Salem",      "count": 130},
+        {"location": "Trichy",     "count": 110}
     ])
 
 @app.route('/api/by-month')

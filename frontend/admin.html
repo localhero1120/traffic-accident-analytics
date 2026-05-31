@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Panel</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{background:#0d0f14;color:#eaeaea;font-family:'Segoe UI',sans-serif;}
+    header{background:#161b24;padding:1rem 2rem;border-bottom:2px solid #e63946;display:flex;justify-content:space-between;align-items:center;}
+    header h1{color:#e63946;font-size:1.2rem;}
+    .logout{background:#e63946;color:white;border:none;border-radius:8px;padding:0.4rem 1rem;cursor:pointer;font-size:0.85rem;font-weight:600;}
+    main{padding:2rem;}
+    .welcome{background:#161b24;border:1px solid #222;border-radius:14px;padding:2rem;text-align:center;margin-bottom:1.5rem;}
+    .welcome h2{color:#2a9d8f;font-size:1.3rem;margin-bottom:0.5rem;}
+    .welcome p{color:#888;font-size:0.9rem;}
+    .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+    .card{background:#161b24;border:1px solid #222;border-radius:14px;padding:1.5rem;text-align:center;border-top:3px solid #e63946;}
+    .card .icon{font-size:2rem;margin-bottom:0.5rem;}
+    .card h3{font-size:1rem;margin-bottom:0.3rem;}
+    .card p{font-size:0.82rem;color:#888;}
+    .back{display:inline-block;margin-top:1.5rem;color:#888;text-decoration:none;font-size:0.85rem;}
+    .back:hover{color:#e63946;}
+    @media(max-width:600px){.cards{grid-template-columns:1fr;}}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🚦 Admin Panel</h1>
+    <button class="logout" onclick="doLogout()">🚪 Logout</button>
+  </header>
+  <main>
+    <div class="welcome">
+      <h2>✅ Welcome, Admin!</h2>
+      <p>Traffic Accident Analytics Admin Panel</p>
+    </div>
+    <div class="cards">
+      <div class="card">
+        <div class="icon">🚨</div>
+        <h3>Total Accidents</h3>
+        <p id="acc">Loading...</p>
+      </div>
+      <div class="card">
+        <div class="icon">💀</div>
+        <h3>Total Deaths</h3>
+        <p id="deaths">Loading...</p>
+      </div>
+      <div class="card">
+        <div class="icon">🏥</div>
+        <h3>Total Injuries</h3>
+        <p id="injuries">Loading...</p>
+      </div>
+    </div>
+    <a href="/" class="back">← Back to Dashboard</a>
+  </main>
+  <script>
+    async function doLogout() {
+      await fetch('/api/logout');
+      window.location.href = '/';
+    }
+    fetch('/api/summary').then(r=>r.json()).then(d=>{
+      document.getElementById('acc').textContent = d.total_accidents.toLocaleString();
+      document.getElementById('deaths').textContent = d.total_deaths.toLocaleString();
+      document.getElementById('injuries').textContent = d.total_injuries.toLocaleString();
+    });
+  </script>
+</body>
+</html>

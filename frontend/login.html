@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Login</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{background:#0d0f14;font-family:'Segoe UI',sans-serif;display:flex;justify-content:center;align-items:center;min-height:100vh;}
+    .card{background:#161b24;border:1px solid #222;border-radius:20px;padding:2.5rem;width:100%;max-width:400px;}
+    .logo{text-align:center;font-size:2.5rem;margin-bottom:0.5rem;}
+    h2{text-align:center;color:#e63946;font-size:1.3rem;margin-bottom:0.3rem;}
+    p{text-align:center;color:#888;font-size:0.85rem;margin-bottom:1.5rem;}
+    label{color:#888;font-size:0.78rem;font-weight:600;text-transform:uppercase;display:block;margin-bottom:0.3rem;margin-top:1rem;}
+    input{width:100%;background:#0d0f14;color:#eaeaea;border:1.5px solid #222;border-radius:8px;padding:0.6rem 1rem;font-size:0.9rem;outline:none;}
+    input:focus{border-color:#457b9d;}
+    .btn{width:100%;background:#e63946;color:white;border:none;border-radius:10px;padding:0.75rem;font-size:1rem;font-weight:700;cursor:pointer;margin-top:1.5rem;}
+    .btn:hover{background:#c1121f;}
+    .error{background:rgba(230,57,70,0.15);border:1px solid #e63946;color:#e63946;padding:0.6rem 1rem;border-radius:8px;font-size:0.85rem;margin-top:1rem;text-align:center;display:none;}
+    .back{text-align:center;margin-top:1rem;}
+    .back a{color:#888;font-size:0.85rem;text-decoration:none;}
+    .back a:hover{color:#e63946;}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo">🚦</div>
+    <h2>Admin Login</h2>
+    <p>Traffic Accident Analytics</p>
+    <div class="error" id="errorMsg"></div>
+    <label>Username</label>
+    <input type="text" id="username" placeholder="Enter username"/>
+    <label>Password</label>
+    <input type="password" id="password" placeholder="Enter password"/>
+    <button class="btn" onclick="doLogin()">🔐 Login</button>
+    <div class="back"><a href="/">← Back to Dashboard</a></div>
+  </div>
+  <script>
+    async function doLogin() {
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({username, password})
+      });
+      const data = await res.json();
+      if (data.success) {
+        window.location.href = '/admin';
+      } else {
+        const err = document.getElementById('errorMsg');
+        err.textContent = '⚠️ ' + data.error;
+        err.style.display = 'block';
+      }
+    }
+  </script>
+</body>
+</html>
