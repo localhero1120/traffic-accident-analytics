@@ -2,7 +2,6 @@ from flask import Flask, jsonify, send_from_directory
 from flask_cors import CORS
 import os
 
-# ✅ Path fix
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 FRONTEND_DIR = os.path.join(BASE_DIR, 'frontend')
 
@@ -13,7 +12,7 @@ CORS(app)
 def index():
     return send_from_directory(FRONTEND_DIR, 'index.html')
 
-    @app.route('/admin')
+@app.route('/admin')
 def admin():
     return send_from_directory(FRONTEND_DIR, 'admin.html')
 
