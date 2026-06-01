@@ -13,6 +13,14 @@ CORS(app)
 def index():
     return send_from_directory(FRONTEND_DIR, 'index.html')
 
+    @app.route('/admin')
+def admin():
+    return send_from_directory(FRONTEND_DIR, 'admin.html')
+
+@app.route('/login')
+def login():
+    return send_from_directory(FRONTEND_DIR, 'login.html')
+
 @app.route('/api/summary')
 def summary():
     return jsonify({
