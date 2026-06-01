@@ -1,300 +1,420 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Admin Panel</title>
-  <style>
-    *{margin:0;padding:0;box-sizing:border-box;}
-    body{background:#0d0f14;color:#eaeaea;font-family:'Segoe UI',sans-serif;}
-    header{background:#161b24;padding:1rem 2rem;border-bottom:2px solid #e63946;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;}
-    header h1{color:#e63946;font-size:1.2rem;}
-    .header-right{display:flex;gap:0.5rem;align-items:center;}
-    .btn{border:none;border-radius:8px;padding:0.4rem 1rem;cursor:pointer;font-size:0.85rem;font-weight:600;}
-    .btn-red{background:#e63946;color:white;}
-    .btn-green{background:#2a9d8f;color:white;}
-    .btn-outline{background:transparent;color:#eaeaea;border:1px solid #222;}
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>PMW Admin Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#060608;color:#f5f5f0;font-family:'DM Sans',sans-serif;}
+nav{background:#161b24;border-bottom:2px solid #e8001d;padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;}
+.nav-logo{font-family:'Bebas Neue';font-size:1.8rem;color:#e8001d;letter-spacing:.1em;}
+.nav-right{display:flex;gap:.8rem;align-items:center;}
+.nav-user{font-size:.82rem;color:#888;}
+.btn{border:none;padding:.5rem 1.2rem;font-family:'DM Sans';font-size:.82rem;font-weight:700;cursor:pointer;letter-spacing:.05em;text-transform:uppercase;transition:all .2s;}
+.btn-red{background:#e8001d;color:white;}
+.btn-red:hover{background:#ff2d47;}
+.btn-outline{background:transparent;color:#888;border:1px solid #333;}
+.btn-outline:hover{border-color:#e8001d;color:#e8001d;}
+.btn-green{background:#2a9d8f;color:white;}
 
-    main{padding:1.5rem;}
+/* SIDEBAR + LAYOUT */
+.layout{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 60px);}
+.sidebar{background:#0d0f14;border-right:1px solid #222;padding:1.5rem 0;}
+.sidebar-title{font-size:.68rem;color:#444;letter-spacing:.15em;text-transform:uppercase;padding:.5rem 1.5rem;margin-bottom:.3rem;}
+.sidebar-link{display:flex;align-items:center;gap:.7rem;padding:.7rem 1.5rem;color:#666;font-size:.85rem;cursor:pointer;transition:all .2s;border-left:2px solid transparent;}
+.sidebar-link:hover,.sidebar-link.active{color:#f5f5f0;background:rgba(232,0,29,.06);border-left-color:#e8001d;}
+.sidebar-link .icon{font-size:1rem;}
 
-    /* KPI */
-    .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;}
-    .kpi{background:#161b24;border:1px solid #222;border-radius:12px;padding:1.2rem;text-align:center;border-top:3px solid #e63946;}
-    .kpi .icon{font-size:1.5rem;}
-    .kpi .num{font-size:1.6rem;font-weight:bold;color:#e63946;margin:0.3rem 0;}
-    .kpi .lbl{font-size:0.78rem;color:#888;}
+/* MAIN */
+.main{padding:2rem;}
+.panel{display:none;}
+.panel.active{display:block;}
+.panel-title{font-family:'Bebas Neue';font-size:2rem;color:#f5f5f0;letter-spacing:.05em;margin-bottom:.4rem;}
+.panel-sub{font-size:.85rem;color:#666;margin-bottom:2rem;}
 
-    /* SECTION */
-    .section{background:#161b24;border:1px solid #222;border-radius:12px;padding:1.5rem;margin-bottom:1.5rem;}
-    .section h2{color:#e63946;font-size:1rem;margin-bottom:1.2rem;display:flex;align-items:center;gap:0.5rem;}
+/* STAT CARDS */
+.stat-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem;}
+.scard{background:#161b24;border:1px solid #222;border-top:3px solid #e8001d;padding:1.2rem;}
+.scard .sv{font-family:'Bebas Neue';font-size:2.2rem;color:#e8001d;}
+.scard .sl{font-size:.72rem;color:#666;text-transform:uppercase;letter-spacing:.08em;margin-top:.2rem;}
 
-    /* FORM */
-    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
-    .form-group{display:flex;flex-direction:column;gap:0.3rem;}
-    .form-group label{font-size:0.78rem;color:#888;font-weight:600;text-transform:uppercase;}
-    .form-group input,.form-group select{background:#0d0f14;color:#eaeaea;border:1.5px solid #222;border-radius:8px;padding:0.5rem 0.8rem;font-size:0.9rem;outline:none;}
-    .form-group input:focus,.form-group select:focus{border-color:#457b9d;}
-    .submit-btn{margin-top:1rem;background:#2a9d8f;color:white;border:none;border-radius:8px;padding:0.6rem 1.5rem;cursor:pointer;font-size:0.9rem;font-weight:600;}
-    .submit-btn:hover{background:#21867a;}
+/* EDIT FORMS */
+.edit-section{background:#161b24;border:1px solid #222;padding:1.5rem;margin-bottom:1.5rem;}
+.edit-section h3{font-family:'Bebas Neue';font-size:1.3rem;color:#e8001d;margin-bottom:1rem;letter-spacing:.05em;}
+.form-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-bottom:1rem;}
+.form-field label{font-size:.7rem;color:#666;text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:.3rem;}
+.form-field input,.form-field textarea,.form-field select{width:100%;background:#0d0f14;color:#f5f5f0;border:1px solid #222;padding:.6rem .8rem;font-family:'DM Sans';font-size:.88rem;outline:none;transition:border-color .2s;}
+.form-field input:focus,.form-field textarea:focus{border-color:#e8001d;}
+.form-field textarea{height:120px;resize:vertical;}
+.save-bar{display:flex;gap:.8rem;align-items:center;margin-top:1rem;}
+.success-msg{font-size:.82rem;color:#2a9d8f;display:none;}
+.success-msg.show{display:inline;}
 
-    /* TABLE */
-    .tbl-wrap{overflow-x:auto;}
-    table{width:100%;border-collapse:collapse;font-size:0.85rem;min-width:500px;}
-    th{background:#e63946;color:white;padding:0.6rem 0.8rem;text-align:left;}
-    td{padding:0.55rem 0.8rem;border-bottom:1px solid #222;}
-    tr:hover td{background:rgba(230,57,70,0.07);}
-    .del-btn{background:#e63946;color:white;border:none;border-radius:6px;padding:0.25rem 0.6rem;cursor:pointer;font-size:0.78rem;}
+/* YEAR CHART */
+.chart-wrap{background:#161b24;border:1px solid #222;padding:1.5rem;margin-bottom:1.5rem;}
+.chart-wrap h3{font-family:'Bebas Neue';font-size:1.2rem;color:#888;margin-bottom:1rem;letter-spacing:.05em;}
+.year-tabs{display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap;}
+.ytab{background:transparent;color:#666;border:1px solid #222;padding:.35rem .9rem;font-size:.78rem;font-weight:600;cursor:pointer;transition:all .2s;letter-spacing:.05em;}
+.ytab.active,.ytab:hover{background:#e8001d;color:white;border-color:#e8001d;}
 
-    /* EDIT DATA */
-    .edit-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
-    .edit-item{display:flex;flex-direction:column;gap:0.3rem;}
-    .edit-item label{font-size:0.78rem;color:#888;font-weight:600;text-transform:uppercase;}
-    .edit-item input{background:#0d0f14;color:#eaeaea;border:1.5px solid #222;border-radius:8px;padding:0.5rem 0.8rem;font-size:0.9rem;outline:none;}
-    .edit-item input:focus{border-color:#457b9d;}
+/* TABLE */
+.data-table{width:100%;border-collapse:collapse;font-size:.85rem;}
+.data-table th{background:#e8001d;color:white;padding:.7rem 1rem;text-align:left;font-size:.78rem;letter-spacing:.05em;}
+.data-table td{padding:.65rem 1rem;border-bottom:1px solid #222;}
+.data-table tr:hover td{background:rgba(232,0,29,.05);}
+.badge{padding:.15rem .6rem;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;}
+.badge.high{background:rgba(232,0,29,.15);color:#e8001d;}
+.badge.med{background:rgba(233,130,12,.15);color:#e9820c;}
+.badge.low{background:rgba(42,157,143,.15);color:#2a9d8f;}
 
-    /* ALERT */
-    .alert-box{background:rgba(230,57,70,0.1);border:1px solid #e63946;border-radius:8px;padding:1rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;}
-    .alert-box input{background:#0d0f14;color:#eaeaea;border:1.5px solid #222;border-radius:8px;padding:0.4rem 0.8rem;font-size:0.9rem;outline:none;width:100px;}
+/* ACTIVITY LOG */
+.log-item{display:flex;gap:1rem;padding:.7rem 0;border-bottom:1px solid #111;align-items:flex-start;}
+.log-time{font-size:.72rem;color:#444;white-space:nowrap;margin-top:.1rem;}
+.log-msg{font-size:.85rem;color:#ccc;}
+.log-dot{width:8px;height:8px;border-radius:50%;background:#e8001d;margin-top:.35rem;flex-shrink:0;}
 
-    /* SUCCESS MSG */
-    .success{background:rgba(42,157,143,0.15);border:1px solid #2a9d8f;color:#2a9d8f;padding:0.5rem 1rem;border-radius:8px;font-size:0.85rem;display:none;margin-top:0.8rem;}
-
-    @media(max-width:768px){
-      .kpi-grid{grid-template-columns:repeat(2,1fr);}
-      .form-grid{grid-template-columns:1fr;}
-      .edit-grid{grid-template-columns:1fr;}
-    }
-  </style>
+@media(max-width:768px){
+  .layout{grid-template-columns:1fr;}
+  .sidebar{display:flex;overflow-x:auto;padding:.5rem;}
+  .sidebar-title{display:none;}
+  .sidebar-link{white-space:nowrap;border-left:none;border-bottom:2px solid transparent;}
+  .stat-cards{grid-template-columns:repeat(2,1fr);}
+}
+</style>
 </head>
 <body>
 
-<header>
-  <h1>🚦 Admin Panel</h1>
-  <div class="header-right">
-    <a href="/" class="btn btn-outline">← Dashboard</a>
-    <button class="btn btn-red" onclick="doLogout()">🚪 Logout</button>
+<nav>
+  <div class="nav-logo">PMW — Admin Panel</div>
+  <div class="nav-right">
+    <span class="nav-user">👤 Admin</span>
+    <button class="btn btn-outline" onclick="window.location.href='/'">🏠 Dashboard</button>
+    <button class="btn btn-red" onclick="doLogout()">🔓 Logout</button>
   </div>
-</header>
+</nav>
 
-<main>
-
-  <!-- KPI -->
-  <div class="kpi-grid">
-    <div class="kpi">
-      <div class="icon">🚨</div>
-      <div class="num" id="kpi_acc">-</div>
-      <div class="lbl">Total Accidents</div>
-    </div>
-    <div class="kpi" style="border-color:#555">
-      <div class="icon">💀</div>
-      <div class="num" style="color:#aaa" id="kpi_deaths">-</div>
-      <div class="lbl">Total Deaths</div>
-    </div>
-    <div class="kpi" style="border-color:#e9820c">
-      <div class="icon">🏥</div>
-      <div class="num" style="color:#e9820c" id="kpi_inj">-</div>
-      <div class="lbl">Total Injuries</div>
-    </div>
-    <div class="kpi" style="border-color:#457b9d">
-      <div class="icon">📅</div>
-      <div class="num" style="color:#457b9d" id="kpi_avg">-</div>
-      <div class="lbl">Avg Per Day</div>
-    </div>
+<div class="layout">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-title">Main Menu</div>
+    <div class="sidebar-link active" onclick="showPanel('overview',this)"><span class="icon">📊</span> Overview</div>
+    <div class="sidebar-link" onclick="showPanel('yearwise',this)"><span class="icon">📅</span> Year Wise Data</div>
+    <div class="sidebar-link" onclick="showPanel('editdata',this)"><span class="icon">✏️</span> Edit Data</div>
+    <div class="sidebar-link" onclick="showPanel('locations',this)"><span class="icon">📍</span> Locations</div>
+    <div class="sidebar-link" onclick="showPanel('activity',this)"><span class="icon">🕐</span> Activity Log</div>
   </div>
 
-  <!-- 1. NEW ACCIDENT ENTRY -->
-  <div class="section">
-    <h2>➕ New Accident Entry</h2>
-    <div class="form-grid">
-      <div class="form-group">
-        <label>Date</label>
-        <input type="date" id="f_date"/>
+  <!-- MAIN CONTENT -->
+  <div class="main">
+
+    <!-- OVERVIEW -->
+    <div class="panel active" id="panel-overview">
+      <div class="panel-title">Dashboard Overview</div>
+      <div class="panel-sub">Real-time accident analytics summary</div>
+      <div class="stat-cards">
+        <div class="scard"><div class="sv" id="ov_acc">1,250</div><div class="sl">Total Accidents</div></div>
+        <div class="scard" style="border-top-color:#555"><div class="sv" style="color:#aaa" id="ov_deaths">340</div><div class="sl">Total Deaths</div></div>
+        <div class="scard" style="border-top-color:#e9820c"><div class="sv" style="color:#e9820c" id="ov_inj">2,100</div><div class="sl">Total Injuries</div></div>
+        <div class="scard" style="border-top-color:#2a9d8f"><div class="sv" style="color:#2a9d8f" id="ov_avg">3.4</div><div class="sl">Avg Per Day</div></div>
       </div>
-      <div class="form-group">
-        <label>City</label>
-        <select id="f_city">
-          <option>Chennai</option>
-          <option>Coimbatore</option>
-          <option>Madurai</option>
-          <option>Salem</option>
-          <option>Trichy</option>
-          <option>Other</option>
-        </select>
+      <div class="chart-wrap">
+        <h3>📈 Monthly Accidents Overview</h3>
+        <canvas id="overviewChart" height="80"></canvas>
       </div>
-      <div class="form-group">
-        <label>Cause</label>
-        <select id="f_cause">
-          <option>Overspeeding</option>
-          <option>Drunk Driving</option>
-          <option>Signal Jump</option>
-          <option>Wrong Lane</option>
-          <option>Distracted</option>
-          <option>Other</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Accidents Count</label>
-        <input type="number" id="f_count" placeholder="0" min="0"/>
-      </div>
-      <div class="form-group">
-        <label>Deaths</label>
-        <input type="number" id="f_deaths" placeholder="0" min="0"/>
-      </div>
-      <div class="form-group">
-        <label>Injuries</label>
-        <input type="number" id="f_injuries" placeholder="0" min="0"/>
+      <div class="chart-wrap">
+        <h3>📍 Location-wise Accidents</h3>
+        <canvas id="locationChart" height="80"></canvas>
       </div>
     </div>
-    <button class="submit-btn" onclick="addEntry()">➕ Add Entry</button>
-    <div class="success" id="entry_success">✅ Entry added successfully!</div>
-  </div>
 
-  <!-- 2. RECORDS TABLE -->
-  <div class="section">
-    <h2>📋 All Accident Records</h2>
-    <div class="tbl-wrap">
-      <table>
-        <thead>
-          <tr><th>#</th><th>Date</th><th>City</th><th>Cause</th><th>Count</th><th>Deaths</th><th>Injuries</th><th>Action</th></tr>
-        </thead>
-        <tbody id="recordsTable">
-          <tr><td colspan="8" style="text-align:center;color:#888">No records yet</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- 3. EDIT SUMMARY DATA -->
-  <div class="section">
-    <h2>📊 Edit Summary Data</h2>
-    <div class="edit-grid">
-      <div class="edit-item">
-        <label>Total Accidents</label>
-        <input type="number" id="e_acc"/>
+    <!-- YEAR WISE -->
+    <div class="panel" id="panel-yearwise">
+      <div class="panel-title">Year Wise Analysis</div>
+      <div class="panel-sub">Compare accident data across years 2020–2025</div>
+      <div class="year-tabs">
+        <button class="ytab active" onclick="showYearChart('all',this)">All Years</button>
+        <button class="ytab" onclick="showYearChart('accidents',this)">Accidents</button>
+        <button class="ytab" onclick="showYearChart('deaths',this)">Deaths</button>
+        <button class="ytab" onclick="showYearChart('injuries',this)">Injuries</button>
       </div>
-      <div class="edit-item">
-        <label>Total Deaths</label>
-        <input type="number" id="e_deaths"/>
+      <div class="chart-wrap">
+        <h3 id="yearChartTitle">📊 All Years Comparison</h3>
+        <canvas id="yearChart" height="100"></canvas>
       </div>
-      <div class="edit-item">
-        <label>Total Injuries</label>
-        <input type="number" id="e_inj"/>
-      </div>
-      <div class="edit-item">
-        <label>Avg Per Day</label>
-        <input type="number" id="e_avg" step="0.1"/>
+      <!-- Year Table -->
+      <div class="edit-section">
+        <h3>📋 Year Wise Data Table</h3>
+        <div style="overflow-x:auto;">
+          <table class="data-table" id="yearTable"></table>
+        </div>
       </div>
     </div>
-    <button class="submit-btn" onclick="saveSummary()">💾 Save Changes</button>
-    <div class="success" id="summary_success">✅ Summary updated!</div>
-  </div>
 
-  <!-- 4. ALERT THRESHOLD -->
-  <div class="section">
-    <h2>🔔 Alert Settings</h2>
-    <div class="alert-box">
-      <span style="color:#888;font-size:0.9rem">Show High Alert when accidents exceed:</span>
-      <input type="number" id="alertThreshold" value="1000"/>
-      <button class="submit-btn" style="margin-top:0" onclick="saveAlert()">Save</button>
-      <span style="color:#2a9d8f;font-size:0.85rem;display:none" id="alert_success">✅ Saved!</span>
+    <!-- EDIT DATA -->
+    <div class="panel" id="panel-editdata">
+      <div class="panel-title">Edit Dashboard Data</div>
+      <div class="panel-sub">Update summary numbers, cause data, and monthly trends</div>
+
+      <!-- Summary -->
+      <div class="edit-section">
+        <h3>📊 Summary Numbers</h3>
+        <div class="form-row">
+          <div class="form-field"><label>Total Accidents</label><input type="number" id="e_acc" value="1250"/></div>
+          <div class="form-field"><label>Total Deaths</label><input type="number" id="e_deaths" value="340"/></div>
+          <div class="form-field"><label>Total Injuries</label><input type="number" id="e_inj" value="2100"/></div>
+          <div class="form-field"><label>Avg Per Day</label><input type="number" id="e_avg" value="3.4" step="0.1"/></div>
+        </div>
+        <div class="save-bar">
+          <button class="btn btn-green" onclick="saveSummary()">💾 Save Summary</button>
+          <span class="success-msg" id="sum_msg">✅ Saved!</span>
+        </div>
+      </div>
+
+      <!-- Cause -->
+      <div class="edit-section">
+        <h3>🍩 Accident Causes</h3>
+        <div class="form-row" id="causeFields"></div>
+        <div class="save-bar">
+          <button class="btn btn-green" onclick="saveCauses()">💾 Save Causes</button>
+          <span class="success-msg" id="cause_msg">✅ Saved!</span>
+        </div>
+      </div>
+
+      <!-- Monthly -->
+      <div class="edit-section">
+        <h3>📈 Monthly Data</h3>
+        <div class="form-row" id="monthFields"></div>
+        <div class="save-bar">
+          <button class="btn btn-green" onclick="saveMonthly()">💾 Save Monthly</button>
+          <span class="success-msg" id="month_msg">✅ Saved!</span>
+        </div>
+      </div>
     </div>
-  </div>
 
-</main>
+    <!-- LOCATIONS -->
+    <div class="panel" id="panel-locations">
+      <div class="panel-title">Location Management</div>
+      <div class="panel-sub">View and manage accident locations</div>
+      <div class="edit-section">
+        <h3>📍 Location Data</h3>
+        <div id="locationFields"></div>
+        <div class="save-bar" style="margin-top:1rem;">
+          <button class="btn btn-green" onclick="saveLocations()">💾 Save Locations</button>
+          <span class="success-msg" id="loc_msg">✅ Saved!</span>
+        </div>
+      </div>
+      <div class="edit-section">
+        <h3>📋 Risk Level Table</h3>
+        <div style="overflow-x:auto;">
+          <table class="data-table" id="locTable"></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ACTIVITY LOG -->
+    <div class="panel" id="panel-activity">
+      <div class="panel-title">Activity Log</div>
+      <div class="panel-sub">Recent admin actions</div>
+      <div class="edit-section">
+        <div id="activityLog"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
 
 <script>
-  let records = JSON.parse(localStorage.getItem('accident_records') || '[]');
-  let threshold = parseInt(localStorage.getItem('alert_threshold') || '1000');
+// ── DATA ──
+let causes=[
+  {cause:'Overspeeding',count:380},{cause:'Drunk Driving',count:210},
+  {cause:'Signal Jump',count:175},{cause:'Wrong Lane',count:140},{cause:'Distracted',count:345}
+];
+let locations=[
+  {location:'Chennai',count:320},{location:'Bengaluru',count:275},
+  {location:'Coimbatore',count:185},{location:'Madurai',count:160},
+  {location:'Salem',count:130},{location:'Trichy',count:110},{location:'Erode',count:95}
+];
+let monthly=[
+  {month:'Jan',count:95},{month:'Feb',count:88},{month:'Mar',count:102},
+  {month:'Apr',count:115},{month:'May',count:98},{month:'Jun',count:120},
+  {month:'Jul',count:135},{month:'Aug',count:128},{month:'Sep',count:110},
+  {month:'Oct',count:95},{month:'Nov',count:88},{month:'Dec',count:126}
+];
+const yearData=[
+  {year:'2020',accidents:850,deaths:210,injuries:1400},
+  {year:'2021',accidents:920,deaths:245,injuries:1580},
+  {year:'2022',accidents:1050,deaths:280,injuries:1750},
+  {year:'2023',accidents:1180,deaths:310,injuries:1950},
+  {year:'2024',accidents:1250,deaths:340,injuries:2100},
+  {year:'2025',accidents:980,deaths:265,injuries:1620},
+];
+let actLog=[];
+let yearChartObj=null,overviewChartObj=null,locationChartObj=null;
 
-  // Load summary
-  fetch('/api/summary').then(r=>r.json()).then(d=>{
-    document.getElementById('kpi_acc').textContent = d.total_accidents.toLocaleString();
-    document.getElementById('kpi_deaths').textContent = d.total_deaths.toLocaleString();
-    document.getElementById('kpi_inj').textContent = d.total_injuries.toLocaleString();
-    document.getElementById('kpi_avg').textContent = d.avg_per_day;
-    document.getElementById('e_acc').value = d.total_accidents;
-    document.getElementById('e_deaths').value = d.total_deaths;
-    document.getElementById('e_inj').value = d.total_injuries;
-    document.getElementById('e_avg').value = d.avg_per_day;
+// ── NAV ──
+function showPanel(name,el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.sidebar-link').forEach(l=>l.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  el.classList.add('active');
+  if(name==='yearwise')renderYearChart('all');
+  if(name==='locations')renderLocationFields();
+  if(name==='activity')renderActivityLog();
+}
+
+// ── OVERVIEW CHARTS ──
+function renderOverviewChart(){
+  if(overviewChartObj)overviewChartObj.destroy();
+  overviewChartObj=new Chart(document.getElementById('overviewChart'),{
+    type:'line',
+    data:{labels:monthly.map(d=>d.month),datasets:[{label:'Accidents',data:monthly.map(d=>d.count),borderColor:'#e8001d',backgroundColor:'rgba(232,0,29,.1)',tension:0.4,fill:true}]},
+    options:{plugins:{legend:{labels:{color:'#eaeaea'}}},scales:{x:{ticks:{color:'#888'},grid:{color:'#1a1a1f'}},y:{ticks:{color:'#888'},grid:{color:'#1a1a1f'}}}}
   });
+  if(locationChartObj)locationChartObj.destroy();
+  locationChartObj=new Chart(document.getElementById('locationChart'),{
+    type:'bar',
+    data:{labels:locations.map(d=>d.location),datasets:[{label:'Accidents',data:locations.map(d=>d.count),backgroundColor:'#457b9d',borderRadius:4}]},
+    options:{plugins:{legend:{labels:{color:'#eaeaea'}}},scales:{x:{ticks:{color:'#888'},grid:{color:'#1a1a1f'}},y:{ticks:{color:'#888'},grid:{color:'#1a1a1f'}}}}
+  });
+}
 
-  document.getElementById('alertThreshold').value = threshold;
-  renderTable();
+// ── YEAR CHART ──
+function renderYearChart(type){
+  if(yearChartObj)yearChartObj.destroy();
+  let datasets=[];
+  if(type==='all'||type==='accidents') datasets.push({label:'Accidents',data:yearData.map(d=>d.accidents),borderColor:'#e8001d',backgroundColor:'rgba(232,0,29,.1)',tension:0.4,fill:type==='accidents'});
+  if(type==='all'||type==='deaths') datasets.push({label:'Deaths',data:yearData.map(d=>d.deaths),borderColor:'#888',backgroundColor:'rgba(136,136,136,.1)',tension:0.4});
+  if(type==='all'||type==='injuries') datasets.push({label:'Injuries',data:yearData.map(d=>d.injuries),borderColor:'#e9820c',backgroundColor:'rgba(233,130,12,.1)',tension:0.4});
+  yearChartObj=new Chart(document.getElementById('yearChart'),{
+    type:'line',
+    data:{labels:yearData.map(d=>d.year),datasets},
+    options:{plugins:{legend:{labels:{color:'#eaeaea'}}},scales:{x:{ticks:{color:'#888'},grid:{color:'#1a1a1f'}},y:{ticks:{color:'#888'},grid:{color:'#1a1a1f'}}}}
+  });
+  // Year Table
+  document.getElementById('yearTable').innerHTML=`
+    <thead><tr><th>Year</th><th>Accidents</th><th>Deaths</th><th>Injuries</th><th>Change</th></tr></thead>
+    <tbody>${yearData.map((d,i)=>{
+      const prev=yearData[i-1];
+      const chg=prev?Math.round((d.accidents-prev.accidents)/prev.accidents*100):0;
+      const color=chg>0?'#e8001d':chg<0?'#2a9d8f':'#888';
+      return `<tr><td>${d.year}</td><td>${d.accidents.toLocaleString()}</td><td>${d.deaths.toLocaleString()}</td><td>${d.injuries.toLocaleString()}</td><td style="color:${color};font-weight:700">${i>0?(chg>0?'↑':'↓')+Math.abs(chg)+'%':'—'}</td></tr>`;
+    }).join('')}</tbody>`;
+}
 
-  function addEntry() {
-    const date = document.getElementById('f_date').value;
-    const city = document.getElementById('f_city').value;
-    const cause = document.getElementById('f_cause').value;
-    const count = parseInt(document.getElementById('f_count').value) || 0;
-    const deaths = parseInt(document.getElementById('f_deaths').value) || 0;
-    const injuries = parseInt(document.getElementById('f_injuries').value) || 0;
+function showYearChart(type,btn){
+  document.querySelectorAll('.ytab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderYearChart(type);
+  document.getElementById('yearChartTitle').textContent=`📊 ${btn.textContent} Trend`;
+}
 
-    if (!date) { alert('Date போடுங்க!'); return; }
+// ── EDIT FORMS ──
+function renderCauseFields(){
+  document.getElementById('causeFields').innerHTML=causes.map((c,i)=>`
+    <div class="form-field">
+      <label>${c.cause}</label>
+      <input type="number" id="cause_${i}" value="${c.count}"/>
+    </div>`).join('');
+}
 
-    records.push({id: Date.now(), date, city, cause, count, deaths, injuries});
-    localStorage.setItem('accident_records', JSON.stringify(records));
-    renderTable();
+function renderMonthFields(){
+  document.getElementById('monthFields').innerHTML=monthly.map((m,i)=>`
+    <div class="form-field">
+      <label>${m.month}</label>
+      <input type="number" id="month_${i}" value="${m.count}"/>
+    </div>`).join('');
+}
 
-    // Reset form
-    document.getElementById('f_date').value = '';
-    document.getElementById('f_count').value = '';
-    document.getElementById('f_deaths').value = '';
-    document.getElementById('f_injuries').value = '';
+function renderLocationFields(){
+  document.getElementById('locationFields').innerHTML=`
+    <div style="font-size:.78rem;color:#666;margin-bottom:.8rem;">Format: CityName — Count</div>
+    ${locations.map((l,i)=>`
+    <div class="form-row" style="margin-bottom:.5rem;">
+      <div class="form-field"><label>City ${i+1}</label><input type="text" id="loc_name_${i}" value="${l.location}"/></div>
+      <div class="form-field"><label>Count</label><input type="number" id="loc_count_${i}" value="${l.count}"/></div>
+    </div>`).join('')}`;
+  renderLocTable();
+}
 
-    const s = document.getElementById('entry_success');
-    s.style.display = 'block';
-    setTimeout(()=>s.style.display='none', 2000);
-  }
+function renderLocTable(){
+  document.getElementById('locTable').innerHTML=`
+    <thead><tr><th>City</th><th>Accidents</th><th>Risk Level</th></tr></thead>
+    <tbody>${[...locations].sort((a,b)=>b.count-a.count).map(l=>{
+      const risk=l.count>250?['High','high']:l.count>150?['Medium','med']:['Low','low'];
+      return `<tr><td>${l.location}</td><td>${l.count}</td><td><span class="badge ${risk[1]}">${risk[0]}</span></td></tr>`;
+    }).join('')}</tbody>`;
+}
 
-  function renderTable() {
-    const tbody = document.getElementById('recordsTable');
-    if (records.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:#888">No records yet</td></tr>';
-      return;
-    }
-    tbody.innerHTML = records.map((r, i) => `
-      <tr>
-        <td>${i+1}</td>
-        <td>${r.date}</td>
-        <td>${r.city}</td>
-        <td>${r.cause}</td>
-        <td>${r.count}</td>
-        <td>${r.deaths}</td>
-        <td>${r.injuries}</td>
-        <td><button class="del-btn" onclick="deleteRecord(${r.id})">🗑️ Delete</button></td>
-      </tr>
-    `).join('');
-  }
+// ── SAVE FUNCTIONS ──
+function addLog(msg){actLog.unshift({time:new Date().toLocaleTimeString(),msg});}
 
-  function deleteRecord(id) {
-    if (!confirm('Delete பண்ணணுமா?')) return;
-    records = records.filter(r => r.id !== id);
-    localStorage.setItem('accident_records', JSON.stringify(records));
-    renderTable();
-  }
+function saveSummary(){
+  const acc=document.getElementById('e_acc').value;
+  const d=document.getElementById('e_deaths').value;
+  const inj=document.getElementById('e_inj').value;
+  const avg=document.getElementById('e_avg').value;
+  document.getElementById('ov_acc').textContent=parseInt(acc).toLocaleString();
+  document.getElementById('ov_deaths').textContent=parseInt(d).toLocaleString();
+  document.getElementById('ov_inj').textContent=parseInt(inj).toLocaleString();
+  document.getElementById('ov_avg').textContent=avg;
+  showMsg('sum_msg');
+  addLog(`Summary updated — Accidents: ${acc}, Deaths: ${d}`);
+}
 
-  function saveSummary() {
-    const s = document.getElementById('summary_success');
-    s.style.display = 'block';
-    document.getElementById('kpi_acc').textContent = parseInt(document.getElementById('e_acc').value).toLocaleString();
-    document.getElementById('kpi_deaths').textContent = parseInt(document.getElementById('e_deaths').value).toLocaleString();
-    document.getElementById('kpi_inj').textContent = parseInt(document.getElementById('e_inj').value).toLocaleString();
-    document.getElementById('kpi_avg').textContent = document.getElementById('e_avg').value;
-    setTimeout(()=>s.style.display='none', 2000);
-  }
+function saveCauses(){
+  causes=causes.map((c,i)=>({...c,count:parseInt(document.getElementById('cause_'+i).value)||0}));
+  showMsg('cause_msg');
+  addLog('Cause data updated');
+  renderOverviewChart();
+}
 
-  function saveAlert() {
-    threshold = parseInt(document.getElementById('alertThreshold').value) || 1000;
-    localStorage.setItem('alert_threshold', threshold);
-    const s = document.getElementById('alert_success');
-    s.style.display = 'inline';
-    setTimeout(()=>s.style.display='none', 2000);
-  }
+function saveMonthly(){
+  monthly=monthly.map((m,i)=>({...m,count:parseInt(document.getElementById('month_'+i).value)||0}));
+  showMsg('month_msg');
+  addLog('Monthly data updated');
+  renderOverviewChart();
+}
 
-  async function doLogout() {
-    await fetch('/api/logout');
-    window.location.href = '/';
-  }
+function saveLocations(){
+  locations=locations.map((_,i)=>({location:document.getElementById('loc_name_'+i).value,count:parseInt(document.getElementById('loc_count_'+i).value)||0}));
+  showMsg('loc_msg');
+  addLog('Location data updated');
+  renderLocTable();
+}
+
+function showMsg(id){
+  const el=document.getElementById(id);
+  el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),2500);
+}
+
+// ── ACTIVITY LOG ──
+function renderActivityLog(){
+  const wrap=document.getElementById('activityLog');
+  if(actLog.length===0){wrap.innerHTML='<p style="color:#444;font-size:.85rem;">No activity yet.</p>';return;}
+  wrap.innerHTML=actLog.map(l=>`
+    <div class="log-item">
+      <div class="log-dot"></div>
+      <div><div class="log-msg">${l.msg}</div><div class="log-time">${l.time}</div></div>
+    </div>`).join('');
+}
+
+// ── LOGOUT ──
+async function doLogout(){
+  await fetch('/api/logout');
+  window.location.href='/login';
+}
+
+// ── INIT ──
+window.addEventListener('load',()=>{
+  renderCauseFields();
+  renderMonthFields();
+  renderOverviewChart();
+  addLog('Admin logged in');
+});
 </script>
 </body>
 </html>

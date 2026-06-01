@@ -1,58 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Admin Login</title>
-  <style>
-    *{margin:0;padding:0;box-sizing:border-box;}
-    body{background:#0d0f14;font-family:'Segoe UI',sans-serif;display:flex;justify-content:center;align-items:center;min-height:100vh;}
-    .card{background:#161b24;border:1px solid #222;border-radius:20px;padding:2.5rem;width:100%;max-width:400px;}
-    .logo{text-align:center;font-size:2.5rem;margin-bottom:0.5rem;}
-    h2{text-align:center;color:#e63946;font-size:1.3rem;margin-bottom:0.3rem;}
-    p{text-align:center;color:#888;font-size:0.85rem;margin-bottom:1.5rem;}
-    label{color:#888;font-size:0.78rem;font-weight:600;text-transform:uppercase;display:block;margin-bottom:0.3rem;margin-top:1rem;}
-    input{width:100%;background:#0d0f14;color:#eaeaea;border:1.5px solid #222;border-radius:8px;padding:0.6rem 1rem;font-size:0.9rem;outline:none;}
-    input:focus{border-color:#457b9d;}
-    .btn{width:100%;background:#e63946;color:white;border:none;border-radius:10px;padding:0.75rem;font-size:1rem;font-weight:700;cursor:pointer;margin-top:1.5rem;}
-    .btn:hover{background:#c1121f;}
-    .error{background:rgba(230,57,70,0.15);border:1px solid #e63946;color:#e63946;padding:0.6rem 1rem;border-radius:8px;font-size:0.85rem;margin-top:1rem;text-align:center;display:none;}
-    .back{text-align:center;margin-top:1rem;}
-    .back a{color:#888;font-size:0.85rem;text-decoration:none;}
-    .back a:hover{color:#e63946;}
-  </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>PMW Admin Login</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#060608;color:#f5f5f0;font-family:'DM Sans',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.bg{position:fixed;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(232,0,29,.08) 0%,transparent 60%);}
+.grid{position:fixed;inset:0;background-image:linear-gradient(rgba(255,255,255,.015) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.015) 1px,transparent 1px);background-size:50px 50px;}
+.box{position:relative;z-index:2;background:#161b24;border:1px solid #222;padding:3rem 2.5rem;width:100%;max-width:420px;text-align:center;}
+.logo{font-family:'Bebas Neue';font-size:4rem;color:#e8001d;letter-spacing:.15em;margin-bottom:.3rem;}
+.subtitle{font-size:.78rem;color:#666;letter-spacing:.2em;text-transform:uppercase;margin-bottom:2.5rem;}
+.field{margin-bottom:1.2rem;text-align:left;}
+.field label{font-size:.72rem;color:#666;text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:.4rem;}
+.field input{width:100%;background:#0d0f14;color:#f5f5f0;border:1px solid #222;padding:.8rem 1rem;font-family:'DM Sans';font-size:.95rem;outline:none;transition:border-color .2s;}
+.field input:focus{border-color:#e8001d;}
+.login-btn{width:100%;background:#e8001d;color:white;border:none;padding:1rem;font-family:'DM Sans';font-size:.9rem;font-weight:700;cursor:pointer;letter-spacing:.1em;text-transform:uppercase;transition:background .2s;margin-top:.5rem;}
+.login-btn:hover{background:#ff2d47;}
+.error{background:rgba(232,0,29,.1);border:1px solid rgba(232,0,29,.3);color:#e8001d;padding:.7rem;font-size:.82rem;margin-bottom:1rem;display:none;}
+.error.show{display:block;}
+.back{margin-top:1.5rem;font-size:.8rem;color:#666;}
+.back a{color:#e8001d;text-decoration:none;}
+</style>
 </head>
 <body>
-  <div class="card">
-    <div class="logo">🚦</div>
-    <h2>Admin Login</h2>
-    <p>Traffic Accident Analytics</p>
-    <div class="error" id="errorMsg"></div>
+<div class="bg"></div>
+<div class="grid"></div>
+<div class="box">
+  <div class="logo">PMW</div>
+  <div class="subtitle">🔐 Admin Panel Login</div>
+  <div class="error" id="errMsg">❌ Wrong username or password!</div>
+  <div class="field">
     <label>Username</label>
-    <input type="text" id="username" placeholder="Enter username"/>
-    <label>Password</label>
-    <input type="password" id="password" placeholder="Enter password"/>
-    <button class="btn" onclick="doLogin()">🔐 Login</button>
-    <div class="back"><a href="/">← Back to Dashboard</a></div>
+    <input type="text" id="uname" placeholder="admin" />
   </div>
-  <script>
-    async function doLogin() {
-      const username = document.getElementById('username').value;
-      const password = document.getElementById('password').value;
-      const res = await fetch('/api/login', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({username, password})
-      });
-      const data = await res.json();
-      if (data.success) {
-        window.location.href = '/admin';
-      } else {
-        const err = document.getElementById('errorMsg');
-        err.textContent = '⚠️ ' + data.error;
-        err.style.display = 'block';
-      }
-    }
-  </script>
+  <div class="field">
+    <label>Password</label>
+    <input type="password" id="pwd" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/>
+  </div>
+  <button class="login-btn" onclick="doLogin()">🔓 Login to Admin</button>
+  <div class="back"><a href="/">← Back to Dashboard</a></div>
+</div>
+<script>
+async function doLogin(){
+  const u=document.getElementById('uname').value;
+  const p=document.getElementById('pwd').value;
+  if(!u||!p){document.getElementById('errMsg').textContent='❌ Enter username and password!';document.getElementById('errMsg').classList.add('show');return;}
+  const res=await fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:u,password:p})});
+  const d=await res.json();
+  if(d.success){window.location.href='/admin';}
+  else{document.getElementById('errMsg').textContent='❌ '+d.msg;document.getElementById('errMsg').classList.add('show');}
+}
+</script>
 </body>
 </html>
